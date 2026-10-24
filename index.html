@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Message For You ❤️</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Great Vibes, Nunito, Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rosewater: '#FFE4E6',
+            cottonpink: '#FDF2F4',
+            blush: '#F472B6',
+            deeppink: '#E11D48',
+            warmcream: '#FFFDF9',
+          },
+          fontFamily: {
+            script: ['"Great Vibes"', 'cursive'],
+            serifTitle: ['"Playfair Display"', 'serif'],
+            body: ['"Nunito"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Full-screen floating background watermarks */
+.kuchipu-bg-hint {
+  position: absolute;
+  font-family: 'Great Vibes', cursive;
+  color: #e11d48;
+  opacity: 0.12; /* Adjust between 0.08 and 0.18 for visibility */
+  font-size: 3.5rem;
+  user-select: none;
+  pointer-events: none;
+  z-index: 1; /* Sits behind the card (card is z-10) */
+  animation: floatDrift 8s ease-in-out infinite alternate;
+}
+
+@keyframes floatDrift {
+  0% { transform: translateY(0px) rotate(-8deg); }
+  50% { transform: translateY(-20px) rotate(4deg); }
+  100% { transform: translateY(10px) rotate(-3deg); }
+}
+    /* Floating Heart Animation */
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) scale(0.6) rotate(0deg);
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.1) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .heart-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatUp 8s linear infinite;
+    }
+
+    /* Flip Card Styles */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-preserve-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Pulsing & Gentle Waves */
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .animate-gentle-pulse {
+      animation: gentlePulse 2.5s ease-in-out infinite;
+    }
+
+    /* Envelope Opening Animation */
+    .envelope-flap {
+      border-left: 65px solid transparent;
+      border-right: 65px solid transparent;
+      border-top: 50px solid #f8b4b4;
+      transform-origin: top;
+      transition: transform 0.6s ease;
+    }
+    .envelope-opened .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 0;
+    }
+
+    /* Input Shake Animation on Error */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .shake-error {
+      animation: shake 0.4s ease;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-cottonpink via-rosewater to-pink-100 text-stone-700 font-body min-h-screen relative overflow-x-hidden selection:bg-rose-200">
+
+  <!-- Floating Hearts Background Container -->
+  <div id="hearts-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+  <!-- ========================================================
+       STAGE 0: INTERACTIVE OPENING SCENE (MOOD & PASSWORD ENVELOPE)
+  ======================================================== -->
+  <div id="gate-overlay" class="fixed inset-0 z-50 bg-gradient-to-br from-cottonpink via-rosewater to-pink-200 flex items-center justify-center p-4 transition-all duration-700">
+    <!-- FULL SCREEN FLOATING WATERMARKS (Spread across the entire display) -->
+    <span class="kuchipu-bg-hint" style="top: 8%; left: 8%; font-size: 4rem;">kuchipu</span>
+    <span class="kuchipu-bg-hint" style="top: 15%; right: 12%; font-size: 3.2rem; animation-delay: 1.5s;">kuchipu</span>
+    <span class="kuchipu-bg-hint" style="top: 48%; left: 5%; font-size: 3.8rem; animation-delay: 3s;">kuchipu</span>
+    <span class="kuchipu-bg-hint" style="top: 50%; right: 6%; font-size: 4.2rem; animation-delay: 2.2s;">kuchipu</span>
+    <span class="kuchipu-bg-hint" style="bottom: 8%; left: 14%; font-size: 3.5rem; animation-delay: 4s;">kuchipu</span>
+    <span class="kuchipu-bg-hint" style="bottom: 10%; right: 15%; font-size: 3.6rem; animation-delay: 0.8s;">kuchipu</span>
+    <span class="kuchipu-bg-hint" style="top: 30%; left: 22%; font-size: 2.8rem; animation-delay: 2.7s;">kuchipu</span>
+
+    <!-- The Central White Card (now sits cleanly in front) -->
+    <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-3xl p-8 sm:p-10 shadow-2xl border border-pink-200 text-center relative z-10">
+    
+      <!-- STEP A: Mood Check -->
+      <div id="gate-mood-step" class="transition-opacity duration-300">
+        <div class="text-5xl mb-3">🌸</div>
+        <h2 class="text-2xl sm:text-3xl font-serifTitle font-bold text-stone-800 mb-2">
+          Before You Open This...
+        </h2>
+        <p class="text-stone-600 text-sm sm:text-base mb-6">
+          I've put my whole heart into writing this for you. Are you feeling ready to hear what I have to say?
+        </p>
+        
+        <div class="flex flex-col gap-3">
+          <button onclick="goToPasswordStep()" class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-deeppink text-white font-bold rounded-2xl shadow-lg hover:shadow-pink-300/50 hover:brightness-105 active:scale-95 transition-all">
+            Yes, I'm ready to read it 💌 Paaka Paaka..
+          </button>
+          <button onclick="showPatienceNotice()" class="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold rounded-2xl transition-all">
+            Still a little upset / Not ready yet.. Call kar leti huu..
+          </button>
+        </div>
+
+        <div id="patience-notice" class="hidden mt-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs sm:text-sm text-deeppink font-semibold animate-pulse">
+          Take all the time you need, Kuchipu. I'm right here waiting whenever your heart is ready. ❤️
+        </div>
+      </div>
+
+      <!-- STEP B: Envelope & Password Lock -->
+      <div id="gate-password-step" class="hidden transition-opacity duration-300">
+        
+        <!-- Faded Floating Background Watermarks -->
+        <span class="kuchipu-bg-hint" style="top: 0; left: 5%;">kuchipu</span>
+        <span class="kuchipu-bg-hint" style="top: 25%; right: 4%; animation-delay: 1.5s;">kuchipu</span>
+        <span class="kuchipu-bg-hint" style="bottom: 12%; left: 8%; animation-delay: 3s; font-size: 2.8rem;">kuchipu</span>
+        <span class="kuchipu-bg-hint" style="bottom: 25%; right: 10%; animation-delay: 2s; font-size: 2rem;">kuchipu</span>
+
+        <!-- Animated 3D Envelope -->
+        <div id="envelope-box" class="w-32 h-20 bg-rose-200 mx-auto mb-4 rounded-b-xl relative shadow-md flex items-center justify-center z-10">
+          <div class="envelope-flap absolute top-0 left-0"></div>
+          <div class="wax-seal w-9 h-9 bg-deeppink rounded-full absolute top-7 flex items-center justify-center text-white text-base shadow z-10">
+            💌
+          </div>
+        </div>
+       
+    
+
+        <h3 class="text-xl sm:text-2xl font-serifTitle font-bold text-stone-800 mb-1">
+          A Secret Sealed Letter for Kuchipu
+        </h3>
+        <p class="text-stone-500 text-xs sm:text-sm mb-4">
+          Only my kuchipu --- special girl who holds my heart knows the code to open this letter.
+        </p>
+
+        <!-- Password Input -->
+        <div class="mb-3">
+          <input 
+            type="text" 
+            id="password-input" 
+            placeholder="Enter the secret code..." 
+            class="w-full px-4 py-3 text-center border-2 border-pink-200 rounded-xl focus:border-deeppink focus:ring-2 focus:ring-pink-200 outline-none transition text-stone-700 font-bold"
+            onkeydown="if(event.key === 'Enter') unlockLetter()"
+          />
+        </div>
+
+        <button onclick="unlockLetter()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-deeppink text-white font-bold rounded-xl shadow hover:brightness-105 active:scale-95 transition">
+          Unlock Letter ✨
+        </button>
+
+        <button onclick="toggleHint()" class="inline-block mt-3 text-xs text-deeppink font-bold underline cursor-pointer">
+          Need a hint? 💡
+        </button>
+
+        <!-- Custom Clue Drawer -->
+        <!-- EDIT HERE: Change your custom hint text if you like -->
+        <div id="hint-drawer" class="hidden mt-3 p-3 bg-pink-50 border border-dashed border-pink-300 rounded-xl text-xs text-stone-600">
+          <strong>Clue:</strong> Something very special (e.g. <code>its everywhere</code>) 💕
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MAIN SITE CONTENT (UNLOCKED UPON PASSWORD SUCCESS)
+  ======================================================== -->
+  <div class="relative z-10 max-w-4xl mx-auto px-4 py-12 flex flex-col items-center">
+
+    <!-- Header Section -->
+    <header class="text-center mb-8">
+      <span class="inline-block px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-md text-deeppink text-sm font-bold tracking-wider uppercase mb-3 shadow-sm border border-pink-200">
+        From My Heart To Yours 💌
+      </span>
+      <h1 class="text-4xl sm:text-6xl font-serifTitle text-pink-900 font-bold tracking-tight mb-2">
+        A Special Message For You
+      </h1>
+      <p class="font-script text-3xl sm:text-4xl text-deeppink mt-1">
+        To My Favorite in the Entire World
+      </p>
+    </header>
+
+    <!-- SECTION 1: Interactive 'Forgive Me?' Question Zone -->
+    <div id="forgive-section" class="w-full bg-white/80 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-xl border border-pink-100 text-center relative transition-all duration-500 mb-10">
+      
+      <div id="question-state">
+        <div class="w-20 h-20 mx-auto mb-4 bg-rose-100 rounded-full flex items-center justify-center text-5xl animate-gentle-pulse shadow-inner">
+          🥺
+        </div>
+        
+        <h2 class="text-2xl sm:text-3xl font-serifTitle font-bold text-gray-800 mb-3">
+          I made a mistake, I'm really sorry, Pls maaf kardo.
+        </h2>
+        
+        <p class="text-gray-600 max-w-lg mx-auto text-base sm:text-lg mb-8">
+          You mean everything to me, and my days are simply incomplete without your smile. Will you please forgive me? Plssss🥹
+        </p>
+
+        <!-- Dynamic pleading text when "No" is chased -->
+        <p id="pleading-text" class="text-deeppink font-semibold h-7 mb-4 text-sm sm:text-base transition-opacity duration-300"></p>
+
+        <!-- Button Playground -->
+        <div class="relative min-h-[140px] flex items-center justify-center gap-6">
+          <!-- Yes Button -->
+          <button id="yes-btn" onclick="handleYesClick()" class="px-8 py-3.5 bg-gradient-to-r from-pink-500 to-deeppink text-white font-bold rounded-2xl shadow-lg hover:shadow-pink-300/50 hover:brightness-105 active:scale-95 transition-all duration-300 flex items-center gap-2">
+            <span>Yes, I Forgive You</span>
+            <span class="text-xl">💖</span>
+          </button>
+
+          <!-- No Button (Runaway) -->
+          <button id="no-btn" onmouseover="dodgeNo()" onclick="dodgeNo()" class="px-8 py-3.5 bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold rounded-2xl shadow transition-all duration-200">
+            No💔
+          </button>
+        </div>
+        <p class="text-xs text-stone-400 mt-2 italic">(P.S. The 'No' button is notoriously hard to click... 😉)</p>
+      </div>
+
+      <!-- State Shown after clicking 'Yes' -->
+      <div id="forgiven-state" class="hidden text-center py-6">
+        <div class="text-6xl mb-3">🎉 🥰 🌹</div>
+        <h3 class="text-3xl sm:text-4xl font-serifTitle font-bold text-deeppink mb-2">
+          Thank You, My Kuchipu, My Love , My Honey!
+        </h3>
+        <p class="text-stone-600 max-w-md mx-auto text-base sm:text-lg">
+          I promise to make it up to you and cherish you every single day. Scroll down to see everything I prepared for you! 👇
+        </p>
+      </div>
+
+    </div>
+
+    <!-- UNLOCKED CONTENT -->
+    <div id="unlocked-content" class="w-full space-y-12">
+
+      <!-- SECTION 2: Heartfelt Letter / Apology Card -->
+      <div class="bg-warmcream/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-lg border border-pink-200 relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 text-9xl text-pink-100/70 select-none pointer-events-none">💌</div>
+        
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-3xl">🕊️</span>
+          <h2 class="text-2xl sm:text-3xl font-serifTitle font-bold text-stone-800">
+            I'm Truly Sorry
+          </h2>
+        </div>
+
+        <div class="space-y-4 text-stone-700 text-base sm:text-lg leading-relaxed relative z-10">
+          <p>
+            Dearest <span class="font-bold text-deeppink">Kuchipu❤️❤️❤️</span>,
+          </p>
+          <p>
+            I wanted to take a moment away from all distractions to tell you how deeply I regret what happened. Seeing you upset breaks my heart, especially knowing that my words or actions caused it.
+          </p>
+          <p>
+            You are my greatest partner, my favorite person, and the sweetest part of every day. Hurting your feelings is the very last thing I ever want to do. I don't take your patience or kindness for granted, and I am committed to learning, listening, and treating your feelings with the gentle care you deserve.
+          </p>
+          <p class="font-script text-3xl text-deeppink pt-2 text-right">
+            Always yours, with all my love ❤️
+          </p>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Reasons I Value You & Promises (Interactive Flip Cards) -->
+      <div>
+        <div class="text-center mb-6">
+          <h2 class="text-2xl sm:text-3xl font-serifTitle font-bold text-stone-800">
+            Promises & What I Cherish About You .......Baad mae agar bhul ho toh maaf kardena Im also ur lil Babyyy
+          </h2>
+          <p class="text-sm sm:text-base text-stone-500 mt-1">Tap each card to flip and reveal a promise 🔄</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          
+          <!-- Card 1 -->
+          <div class="perspective-1000 h-56 cursor-pointer" onclick="toggleCard(this)">
+            <div class="card-inner relative w-full h-full transform-style-preserve-3d transition-transform duration-500 rounded-2xl shadow-md">
+              <div class="absolute inset-0 bg-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden border border-pink-100">
+                <span class="text-4xl mb-2">👂</span>
+                <h3 class="font-bold text-stone-800 text-lg">Active Listening</h3>
+                <p class="text-xs text-pink-500 mt-2 font-semibold">Tap to flip ✨</p>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-br from-pink-400 to-deeppink text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden rotate-y-180">
+                <p class="text-sm font-medium">
+                  "I promise to truly listen to understand how you feel, without being defensive or distracted."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="perspective-1000 h-56 cursor-pointer" onclick="toggleCard(this)">
+            <div class="card-inner relative w-full h-full transform-style-preserve-3d transition-transform duration-500 rounded-2xl shadow-md">
+              <div class="absolute inset-0 bg-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden border border-pink-100">
+                <span class="text-4xl mb-2">🍫</span>
+                <h3 class="font-bold text-stone-800 text-lg">Favorite Snacks</h3>
+                <p class="text-xs text-pink-500 mt-2 font-semibold">Tap to flip ✨</p>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-br from-pink-400 to-deeppink text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden rotate-y-180">
+                <p class="text-sm font-medium">
+                  "I promise to surprise you with your favorite treats and drinks whenever you've had a tiring day."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="perspective-1000 h-56 cursor-pointer" onclick="toggleCard(this)">
+            <div class="card-inner relative w-full h-full transform-style-preserve-3d transition-transform duration-500 rounded-2xl shadow-md">
+              <div class="absolute inset-0 bg-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden border border-pink-100">
+                <span class="text-4xl mb-2">⏰</span>
+                <h3 class="font-bold text-stone-800 text-lg">Quality Time</h3>
+                <p class="text-xs text-pink-500 mt-2 font-semibold">Tap to flip ✨</p>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-br from-pink-400 to-deeppink text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden rotate-y-180">
+                <p class="text-sm font-medium">
+                  "I promise uninterrupted phone-free dates and genuine undivided attention just for you."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="perspective-1000 h-56 cursor-pointer" onclick="toggleCard(this)">
+            <div class="card-inner relative w-full h-full transform-style-preserve-3d transition-transform duration-500 rounded-2xl shadow-md">
+              <div class="absolute inset-0 bg-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden border border-pink-100">
+                <span class="text-4xl mb-2">🫂</span>
+                <h3 class="font-bold text-stone-800 text-lg">Endless Warmth</h3>
+                <p class="text-xs text-pink-500 mt-2 font-semibold">Tap to flip ✨</p>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-br from-pink-400 to-deeppink text-white rounded-2xl p-5 flex flex-col items-center justify-center text-center backface-hidden rotate-y-180">
+                <p class="text-sm font-medium">
+                  "I promise unlimited warm hugs, cozy forehead kisses, and to always remind you how loved you are."
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 4: Redeemable Love Coupons -->
+      <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-lg border border-pink-100">
+        <div class="text-center mb-8">
+          <span class="text-xs font-bold text-deeppink uppercase tracking-wider bg-pink-100 px-3 py-1 rounded-full">Non-Expiring Guarantees</span>
+          <h2 class="text-2xl sm:text-3xl font-serifTitle font-bold text-stone-800 mt-2">
+            Redeemable Love Coupons 🎟️
+          </h2>
+          <p class="text-sm text-stone-500">Click any coupon below whenever you want to redeem it!</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Coupon 1 -->
+          <div id="coupon-1" class="border-2 border-dashed border-pink-300 rounded-2xl p-5 bg-pink-50/50 hover:bg-pink-50 transition duration-300 flex items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">🍨</span>
+                <h3 class="font-bold text-stone-800">Late Night Ice Cream Run , Mat bolna not possible</h3>
+              </div>
+              <p class="text-xs text-stone-500 mt-1">Any flavor, any time, no questions asked.</p>
+            </div>
+            <button onclick="redeemCoupon('coupon-1', 'Ice Cream Run')" class="px-4 py-2 bg-deeppink hover:bg-pink-700 text-white text-xs font-bold rounded-xl transition shadow-sm whitespace-nowrap">
+              Redeem
+            </button>
+          </div>
+
+          <!-- Coupon 2 -->
+          <div id="coupon-2" class="border-2 border-dashed border-pink-300 rounded-2xl p-5 bg-pink-50/50 hover:bg-pink-50 transition duration-300 flex items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">🎬</span>
+                <h3 class="font-bold text-stone-800">You Pick Movie & Dinner</h3>
+              </div>
+              <p class="text-xs text-stone-500 mt-1">Zero complaints, all snacks covered by me.</p>
+            </div>
+            <button onclick="redeemCoupon('coupon-2', 'Movie & Dinner Choice')" class="px-4 py-2 bg-deeppink hover:bg-pink-700 text-white text-xs font-bold rounded-xl transition shadow-sm whitespace-nowrap">
+              Redeem
+            </button>
+          </div>
+
+          <!-- Coupon 3 -->
+          <div id="coupon-3" class="border-2 border-dashed border-pink-300 rounded-2xl p-5 bg-pink-50/50 hover:bg-pink-50 transition duration-300 flex items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">💆‍♀️</span>
+                <h3 class="font-bold text-stone-800">Unlimited -Minute Massage</h3>
+              </div>
+              <p class="text-xs text-stone-500 mt-1">Shoulders, neck, or feet after a long workday.</p>
+            </div>
+            <button onclick="redeemCoupon('coupon-3', '30-Min Massage')" class="px-4 py-2 bg-deeppink hover:bg-pink-700 text-white text-xs font-bold rounded-xl transition shadow-sm whitespace-nowrap">
+              Redeem
+            </button>
+          </div>
+
+          <!-- Coupon 4 -->
+          <div id="coupon-4" class="border-2 border-dashed border-pink-300 rounded-2xl p-5 bg-pink-50/50 hover:bg-pink-50 transition duration-300 flex items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">🧸</span>
+                <h3 class="font-bold text-stone-800">Warm Hug , Unlimited Kisess on Demand</h3>
+              </div>
+              <p class="text-xs text-stone-500 mt-1">A long, uninterrupted cuddle session.</p>
+            </div>
+            <button onclick="redeemCoupon('coupon-4', 'Warm Hug On Demand')" class="px-4 py-2 bg-deeppink hover:bg-pink-700 text-white text-xs font-bold rounded-xl transition shadow-sm whitespace-nowrap">
+              Redeem
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Redemption Feedback Toast -->
+        <div id="coupon-toast" class="hidden mt-4 p-3 bg-rose-100 border border-rose-300 rounded-xl text-center text-sm font-semibold text-rose-800">
+          Coupon claimed! Taking a screenshot to show you I mean it! ❤️
+        </div>
+      </div>
+
+      <!-- SECTION 5: Sweet Memories Gallery with Image & Video Support -->
+      <div>
+        <div class="text-center mb-6">
+          <h2 class="text-2xl sm:text-3xl font-serifTitle font-bold text-stone-800">
+            Favorite Memories & Reminders 📌
+          </h2>
+          <p class="text-sm text-stone-500">A few things that never fail to make me fall in love all over again</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          
+          <!-- Sticky Note 1: Image -->
+          <div class="bg-amber-50 rounded-2xl p-5 shadow-md border-t-8 border-amber-300 transform -rotate-1 hover:rotate-0 transition duration-300 flex flex-col justify-between">
+            <div class="mb-4">
+              <img 
+                src="images/memory1.JPG" 
+                alt="Sweet Memory" 
+                onerror="this.src='https://placehold.co/600x400/ffe4e6/e11d48?text=Our+Sweet+Memory'" 
+                class="rounded-xl w-full h-36 object-cover shadow-inner mb-3"
+              >
+              <h4 class="font-bold text-stone-800 mb-1">That Uncontrollable Laugh</h4>
+              <p class="text-xs text-stone-600 leading-relaxed">
+                 That smile is my favorite view in the universe.
+              </p>
+            </div>
+            <span class="text-[10px] text-stone-400 font-mono text-right">#Memory1</span>
+          </div>
+
+          <!-- Sticky Note 2: Embedded Video -->
+          <div class="bg-rose-50 rounded-2xl p-5 shadow-md border-t-8 border-rose-300 transform rotate-2 hover:rotate-0 transition duration-300 flex flex-col justify-between">
+            <div class="mb-4">
+              <video 
+                autoplay 
+                muted 
+                loop 
+                playsinline 
+                controls
+                class="rounded-xl w-full h-36 object-cover shadow-inner mb-3 bg-black/10"
+              >
+                <source src="images/memory2.MP4" type="video/mp4" />
+                Your browser does not support video.
+              </video>
+              <h4 class="font-bold text-stone-800 mb-1">Our Quiet Moments</h4>
+              <p class="text-xs text-stone-600 leading-relaxed">
+                Even doing absolutely nothing together feels like an adventure when it's with you.
+              </p>
+            </div>
+            <span class="text-[10px] text-stone-400 font-mono text-right">#Memory2</span>
+          </div>
+
+          <!-- Sticky Note 3: Image -->
+          <div class="bg-yellow-50 rounded-2xl p-5 shadow-md border-t-8 border-yellow-300 transform -rotate-2 hover:rotate-0 transition duration-300 flex flex-col justify-between">
+            <div class="mb-4">
+              <img 
+                src="images/memory3.JPG" 
+                alt="Adventures" 
+                onerror="this.src='https://placehold.co/600x400/ffe4e6/e11d48?text=Hand+In+Hand'" 
+                class="rounded-xl w-full h-36 object-cover shadow-inner mb-3"
+              >
+              <h4 class="font-bold text-stone-800 mb-1">You Make Me Better</h4>
+              <p class="text-xs text-stone-600 leading-relaxed">
+                Your compassion inspires me every single day. I'm thankful for you and so lucky to have you.
+              </p>
+            </div>
+            <span class="text-[10px] text-stone-400 font-mono text-right">#Memory3</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 6: Heartfelt Footer -->
+      <footer class="text-center py-8 border-t border-pink-200">
+        <p class="font-script text-3xl text-deeppink">Made with all my love </p>
+        <p class="text-xs text-stone-400 mt-1">Always by your side ❤️</p>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // --- 0. GATEWAY & PASSWORD LOGIC ---
+    // Add all acceptable variations in lowercase
+    const ACCEPTED_PASSWORDS = [
+      "kuchipu",
+    ];
+
+    function goToPasswordStep() {
+      document.getElementById('gate-mood-step').classList.add('hidden');
+      document.getElementById('gate-password-step').classList.remove('hidden');
+      document.getElementById('password-input').focus();
+    }
+
+    function showPatienceNotice() {
+      const notice = document.getElementById('patience-notice');
+      notice.classList.remove('hidden');
+    }
+
+    function toggleHint() {
+      const drawer = document.getElementById('hint-drawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function unlockLetter() {
+      const input = document.getElementById('password-input');
+      const val = input.value.trim().toLowerCase();
+
+      if (ACCEPTED_PASSWORDS.includes(val)) {
+        // Animate envelope opening
+        document.getElementById('envelope-box').classList.add('envelope-opened');
+
+        // Confetti burst for unlock
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 50,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        }
+
+        // Fade out overlay after brief pause
+        setTimeout(() => {
+          const overlay = document.getElementById('gate-overlay');
+          overlay.classList.add('opacity-0', 'pointer-events-none', 'scale-105');
+          setTimeout(() => overlay.remove(), 750);
+        }, 650);
+
+      } else {
+        // Shake error animation and reveal hint
+        input.classList.add('shake-error', 'border-red-500');
+        setTimeout(() => {
+          input.classList.remove('shake-error', 'border-red-500');
+        }, 500);
+        document.getElementById('hint-drawer').classList.remove('hidden');
+      }
+    }
+
+    // --- 1. Background Floating Hearts Generator ---
+    function createFloatingHearts() {
+      const container = document.getElementById('hearts-container');
+      const heartEmojis = ['❤️', '🥹', '🌸', '✨', '🫶🏻', '🤍', '💌'];
+      
+      for (let i = 0; i < 22; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle select-none';
+        heart.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        
+        heart.style.left = Math.random() * 95 + 'vw';
+        heart.style.animationDuration = (6 + Math.random() * 8) + 's';
+        heart.style.animationDelay = (Math.random() * 5) + 's';
+        heart.style.fontSize = (16 + Math.random() * 20) + 'px';
+        
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
+
+    // --- 2. Runaway "No" Button & Growing "Yes" Button ---
+    const noBtn = document.getElementById('no-btn');
+    const yesBtn = document.getElementById('yes-btn');
+    const pleadingText = document.getElementById('pleading-text');
+
+    const pleadingPhrases = [
+      "Are you sure? 🥺",
+      "Please think about it again! 🙏",
+      "Look at how cute and sincere I am! 🥺",
+      "You can't catch this button! 🏃💨",
+      "I promise unlimited forehead kisses! 💋",
+      "What if I get you your favorite Boba / coffee? 🧋",
+      "Please give me one chance! ❤️",
+      "Pretty please with extra sprinkles? 🧁"
+    ];
+
+    let dodgeCount = 0;
+    let yesScale = 1;
+
+    function dodgeNo() {
+      dodgeCount++;
+
+      // Pick pleading message
+      const randomPhrase = pleadingPhrases[dodgeCount % pleadingPhrases.length];
+      pleadingText.textContent = randomPhrase;
+
+      // Expand the Yes button
+      yesScale += 0.15;
+      if (yesScale > 2.2) yesScale = 2.2;
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      // Teleport the No button safely
+      const safeRadius = 130;
+      const randomX = (Math.random() - 0.5) * safeRadius * 2;
+      const randomY = (Math.random() - 0.5) * safeRadius;
+
+      // Shrink No button slightly
+      const noScale = Math.max(0.65, 1 - (dodgeCount * 0.05));
+      noBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(${noScale})`;
+    }
+
+    // --- 3. Forgiveness Celebration Event ---
+    function handleYesClick() {
+      if (typeof confetti === 'function') {
+        const duration = 3.5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+        const interval = setInterval(function() {
+          const timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+          const particleCount = 50 * (timeLeft / duration);
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+      }
+
+      // Hide question and show thank you banner
+      document.getElementById('question-state').classList.add('hidden');
+      const forgivenState = document.getElementById('forgiven-state');
+      forgivenState.classList.remove('hidden');
+
+      // Scroll smoothly to letter
+      setTimeout(() => {
+        const unlockedSection = document.getElementById('unlocked-content');
+        unlockedSection.scrollIntoView({ behavior: 'smooth' });
+      }, 700);
+    }
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // --- 4. Interactive Card Flip ---
+    function toggleCard(wrapper) {
+      const inner = wrapper.querySelector('.card-inner');
+      inner.classList.toggle('flipped');
+    }
+
+    // --- 5. Coupon Redemption Action ---
+    function redeemCoupon(couponId, couponName) {
+      const couponElement = document.getElementById(couponId);
+      const button = couponElement.querySelector('button');
+
+      button.disabled = true;
+      button.innerText = 'Redeemed! ✨';
+      button.classList.remove('bg-deeppink', 'hover:bg-pink-700');
+      button.classList.add('bg-stone-300', 'text-stone-500', 'cursor-not-allowed');
+
+      couponElement.classList.add('opacity-80', 'bg-emerald-50/70', 'border-emerald-300');
+      couponElement.classList.remove('bg-pink-50/50', 'border-pink-300');
+
+      const toast = document.getElementById('coupon-toast');
+      toast.innerText = `🎉 You redeemed: "${couponName}"! I promise to deliver right away. ❤️`;
+      toast.classList.remove('hidden');
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 30,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
