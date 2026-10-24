@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Special Scrapbook 📸</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Great+Vibes&family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cottonpink: '#FDF2F4',
+            rosewater: '#FFE4E6',
+            deeppink: '#E11D48',
+            warmcream: '#FFFDF9',
+          },
+          fontFamily: {
+            script: ['"Great Vibes"', 'cursive'],
+            handwritten: ['"Caveat"', 'cursive'],
+            serifTitle: ['"Playfair Display"', 'serif'],
+            body: ['"Nunito"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Polaroid Pin & Shadow Styling */
+    .polaroid {
+      background: #ffffff;
+      padding: 14px 14px 24px 14px;
+      box-shadow: 0 10px 25px rgba(225, 29, 72, 0.12), 0 4px 10px rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .polaroid:hover {
+      transform: translateY(-8px) scale(1.02) rotate(0deg) !important;
+      box-shadow: 0 16px 35px rgba(225, 29, 72, 0.22);
+      z-index: 20;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-cottonpink via-rosewater to-pink-100 text-stone-700 font-body min-h-screen py-10 px-4">
+
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Top Navigation Bar -->
+    <div class="flex items-center justify-between mb-8">
+      <a href="index.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 hover:bg-white text-deeppink font-bold text-sm rounded-full shadow-sm hover:shadow transition border border-pink-200">
+        ← Back to Letter
+      </a>
+      <span class="text-xs font-semibold text-pink-500 uppercase tracking-widest bg-white/60 px-3 py-1 rounded-full border border-pink-100">
+        Memory Capsule
+      </span>
+    </div>
+
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h1 class="text-4xl sm:text-6xl font-serifTitle font-bold text-pink-900 tracking-tight mb-2">
+        Our Favorite Moments
+      </h1>
+      <p class="font-script text-3xl sm:text-4xl text-deeppink">
+        Every snapshot with you is my absolute favorite
+      </p>
+      <p class="text-xs text-stone-400 mt-2">Tap any photo to zoom in 🔍</p>
+    </header>
+
+    <!-- Photo Scrapbook Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-2 sm:px-6">
+
+      <!-- Photo 1 -->
+      <div class="polaroid transform -rotate-2" onclick="openLightbox('images/memory1.JPG', 'That unstoppable laugh of yours')">
+        <div class="w-full h-64 overflow-hidden rounded bg-pink-50 mb-3">
+          <img src="images/memory1.JPG" alt="Memory" onerror="this.src='https://placehold.co/600x600/ffe4e6/e11d48?text=Add+Photo+1'" class="w-full h-full object-cover">
+        </div>
+        <p class="font-handwritten text-2xl text-stone-800 text-center">That uncontrollable laugh ❤️</p>
+        <span class="block text-center text-[10px] text-stone-400 font-mono mt-1">#ForeverFavorite</span>
+      </div>
+
+      <!-- Photo 2 -->
+      <div class="polaroid transform rotate-2" onclick="openLightbox('images/memory3.JPG', 'Adventures with my favourite human')">
+        <div class="w-full h-64 overflow-hidden rounded bg-pink-50 mb-3">
+          <img src="images/memory3.JPG" alt="Memory" onerror="this.src='https://placehold.co/600x600/ffe4e6/e11d48?text=Add+Photo+2'" class="w-full h-full object-cover">
+        </div>
+        <p class="font-handwritten text-2xl text-stone-800 text-center">Hand in hand anywhere ✨</p>
+        <span class="block text-center text-[10px] text-stone-400 font-mono mt-1">#WithYou</span>
+      </div>
+
+      <!-- Photo 3 -->
+      <div class="polaroid transform -rotate-1" onclick="openLightbox('images/photo1.jpg', 'Our cozy dates')">
+        <div class="w-full h-64 overflow-hidden rounded bg-pink-50 mb-3">
+          <img src="images/photo1.jpg" alt="Memory" onerror="this.src='https://placehold.co/600x600/ffe4e6/e11d48?text=Add+Photo+3'" class="w-full h-full object-cover">
+        </div>
+        <p class="font-handwritten text-2xl text-stone-800 text-center">Cafe talks & stolen glances ☕</p>
+        <span class="block text-center text-[10px] text-stone-400 font-mono mt-1">#SpecialMoments</span>
+      </div>
+
+      <!-- Photo 4 -->
+      <div class="polaroid transform rotate-3" onclick="openLightbox('images/photo2.jpg', 'The sweetest smile')">
+        <div class="w-full h-64 overflow-hidden rounded bg-pink-50 mb-3">
+          <img src="images/photo2.jpg" alt="Memory" onerror="this.src='https://placehold.co/600x600/ffe4e6/e11d48?text=Add+Photo+4'" class="w-full h-full object-cover">
+        </div>
+        <p class="font-handwritten text-2xl text-stone-800 text-center">My favorite view in the world 🌸</p>
+        <span class="block text-center text-[10px] text-stone-400 font-mono mt-1">#PrettyKuchipu</span>
+      </div>
+
+      <!-- Photo 5 -->
+      <div class="polaroid transform -rotate-2" onclick="openLightbox('images/photo3.jpg', 'Late nights together')">
+        <div class="w-full h-64 overflow-hidden rounded bg-pink-50 mb-3">
+          <img src="images/photo3.jpg" alt="Memory" onerror="this.src='https://placehold.co/600x600/ffe4e6/e11d48?text=Add+Photo+5'" class="w-full h-full object-cover">
+        </div>
+        <p class="font-handwritten text-2xl text-stone-800 text-center">Late nights & endless stories 🌙</p>
+        <span class="block text-center text-[10px] text-stone-400 font-mono mt-1">#AlwaysUs</span>
+      </div>
+
+      <!-- Photo 6 -->
+      <div class="polaroid transform rotate-1" onclick="openLightbox('images/photo4.jpg', 'Just being silly')">
+        <div class="w-full h-64 overflow-hidden rounded bg-pink-50 mb-3">
+          <img src="images/photo4.jpg" alt="Memory" onerror="this.src='https://placehold.co/600x600/ffe4e6/e11d48?text=Add+Photo+6'" class="w-full h-full object-cover">
+        </div>
+        <p class="font-handwritten text-2xl text-stone-800 text-center">To many more memories to make 🥂</p>
+        <span class="block text-center text-[10px] text-stone-400 font-mono mt-1">#MoreToCome</span>
+      </div>
+
+    </div>
+
+    <!-- Bottom Action Button -->
+    <div class="text-center mt-16">
+      <a href="index.html" class="inline-block px-8 py-3.5 bg-gradient-to-r from-pink-500 to-deeppink text-white font-bold rounded-2xl shadow-lg hover:shadow-pink-300/50 hover:brightness-105 active:scale-95 transition-all">
+        Back to the Apology Letter ❤️
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Interactive Lightbox Modal for Photo Zoom -->
+  <div id="lightbox" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
+    <div class="relative max-w-2xl max-h-[85vh] p-3 bg-white rounded-2xl shadow-2xl flex flex-col items-center" onclick="event.stopPropagation()">
+      <img id="lightbox-img" src="" alt="Enlarged Memory" class="max-h-[68vh] w-auto rounded-xl object-contain">
+      <p id="lightbox-caption" class="font-handwritten text-2xl text-stone-800 mt-3 text-center"></p>
+      <button onclick="closeLightbox()" class="mt-2 text-xs text-stone-400 underline cursor-pointer">Tap anywhere outside to close</button>
+    </div>
+  </div>
+
+  <script>
+    function openLightbox(imgSrc, captionText) {
+      document.getElementById('lightbox-img').src = imgSrc;
+      document.getElementById('lightbox-caption').innerText = captionText;
+      document.getElementById('lightbox').classList.remove('hidden');
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 20,
+          spread: 45,
+          origin: { y: 0.8 }
+        });
+      }
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
